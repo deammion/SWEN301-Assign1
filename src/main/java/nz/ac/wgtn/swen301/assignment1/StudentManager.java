@@ -38,9 +38,7 @@ public class StudentManager {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, id);
 
-            System.out.println("Student " + stmt.toString());
-
-            ResultSet result = stmt.executeQuery(sql);
+            ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
                 String idnum = result.getString(1);
@@ -76,9 +74,7 @@ public class StudentManager {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, id);
 
-            System.out.println("Degree " + stmt.toString());
-
-            ResultSet result = stmt.executeQuery(sql);
+            ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
                 String idnum = result.getString(1);
