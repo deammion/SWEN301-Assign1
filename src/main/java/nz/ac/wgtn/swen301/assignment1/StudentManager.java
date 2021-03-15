@@ -27,8 +27,34 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readStudent (followed by optional numbers if multiple tests are used)
      */
-    public static Student readStudent(String id) throws NoSuchRecordException {
-        return null;
+    public static Student readStudent(String id) throws NoSuchRecordException, SQLException {
+        try {
+            Connection connection;
+            String url = "jdbc:derby:memory:studentdb";
+            connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT * FROM STUDENTS WHERE id=?";
+
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            System.out.println("Student " + stmt.toString());
+
+            ResultSet result = stmt.executeQuery(sql);
+
+            if (result.next()) {
+                String idnum = result.getString(1);
+                String lName = result.getString(2);
+                String fName = result.getString(3);
+                String degree = result.getString(4);
+                connection.close();
+                return new Student(idnum, lName, fName, readDegree(degree));
+            } else {
+                throw new NoSuchRecordException();
+            }
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
     }
 
     /**
@@ -39,8 +65,32 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readDegree (followed by optional numbers if multiple tests are used)
      */
-    public static Degree readDegree(String id) throws NoSuchRecordException {
-        return null;
+    public static Degree readDegree(String id) throws NoSuchRecordException, SQLException {
+        try {
+            Connection connection;
+            String url = "jdbc:derby:memory:studentdb";
+            connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT * FROM DEGREES WHERE id=?";
+
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            System.out.println("Degree " + stmt.toString());
+
+            ResultSet result = stmt.executeQuery(sql);
+
+            if (result.next()) {
+                String idnum = result.getString(1);
+                String degreeName = result.getString(2);
+                connection.close();
+                return new Degree(idnum, degreeName);
+            } else {
+                throw new NoSuchRecordException();
+            }
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
     }
 
     /**
@@ -50,7 +100,9 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record corresponding to this student instance exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_delete
      */
-    public static void delete(Student student) throws NoSuchRecordException {}
+    public static void delete(Student student) throws NoSuchRecordException {
+
+    }
 
     /**
      * Update (synchronize) a student instance with the database.
