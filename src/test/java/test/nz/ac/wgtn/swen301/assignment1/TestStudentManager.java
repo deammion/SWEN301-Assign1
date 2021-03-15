@@ -33,7 +33,7 @@ public class TestStudentManager {
     @Test
     public void testReadStudent() throws NoSuchRecordException {
         try {
-            Student studentExpected = new Student("id0","James","Smith",new Degree("deg 0", "BSc Computer Science"));
+            Student studentExpected = new Student("id0","James","Smith",new Degree());
 
             Student studentReceived = new StudentManager().readStudent("id0");
             assertNotNull(studentReceived);
@@ -58,23 +58,33 @@ public class TestStudentManager {
         }
     }
 
-//    @Test
-//    public void testDelete() throws NoSuchRecordException {
-//        try {
-//
-//        } catch (NoSuchRecordException e) {
-//
-//        }
-//    }
-//
-//    @Test
-//    public void testUpdate() throws NoSuchRecordException {
-//        try {
-//
-//        } catch (NoSuchRecordException e) {
-//
-//        }
-//    }
+    @Test
+    public void testDelete() throws NoSuchRecordException {
+        try {
+            Student studentToDelete = new Student("id0","James","Smith",new Degree());
+
+            StudentManager.delete(studentToDelete);
+            StudentManager.readStudent("id0");
+
+        } catch (NoSuchRecordException | SQLException e) {
+            assert(true);
+        }
+    }
+
+    @Test
+    public void testUpdate() throws NoSuchRecordException {
+        try {
+            Student studentExpected = new Student("id0", "Student", "New", new Degree());
+            StudentManager.update(studentExpected);
+
+            Student studentRecieved = StudentManager.readStudent("id0");
+            assertNotNull(studentRecieved);
+            assertEquals(studentExpected, studentRecieved);
+
+        } catch (NoSuchRecordException | SQLException e) {
+            fail("No such record exists");
+        }
+    }
 //
 //    @Test
 //    public void testCreateStudent() {

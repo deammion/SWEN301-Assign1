@@ -96,8 +96,22 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record corresponding to this student instance exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_delete
      */
-    public static void delete(Student student) throws NoSuchRecordException {
+    public static void delete(Student student) throws NoSuchRecordException, SQLException {
+        String id = student.getId();
+        try {
+            Connection connection;
+            String url = "jdbc:derby:memory:studentdb";
+            connection = DriverManager.getConnection(url);
 
+            String sql = "DELETE FROM STUDENTS WHERE id=?";
+
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            stmt.executeQuery();
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
     }
 
     /**
@@ -110,7 +124,26 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record corresponding to this student instance exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_update (followed by optional numbers if multiple tests are used)
      */
-    public static void update(Student student) throws NoSuchRecordException {}
+    public static void update(Student student) throws NoSuchRecordException, SQLException {
+        String id = student.getId();
+        String name = student.getName();
+        String fName = student.getFirstName();
+        Degree degree = student.getDegree();
+        try {
+            Connection connection;
+            String url = "jdbc:derby:memory:studentdb";
+            connection = DriverManager.getConnection(url);
+
+            String sql = "UPDATE STUDENTS SET first_name = name, NAME = name WHERE id=?";
+
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, id);
+
+            stmt.executeQuery();
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
+    }
 
 
     /**
