@@ -2,6 +2,7 @@ package nz.ac.wgtn.swen301.assignment1;
 
 import nz.ac.wgtn.swen301.studentdb.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -28,14 +29,10 @@ public class StudentManager {
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readStudent (followed by optional numbers if multiple tests are used)
      */
     public static Student readStudent(String id) throws NoSuchRecordException, SQLException {
-        try {
-            Connection connection;
-            String url = "jdbc:derby:memory:studentdb";
-            connection = DriverManager.getConnection(url);
+        String sql = "SELECT * FROM STUDENTS WHERE id=?";
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+            PreparedStatement stmt = connection.prepareStatement(sql)){
 
-            String sql = "SELECT * FROM STUDENTS WHERE id=?";
-
-            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, id);
 
             ResultSet result = stmt.executeQuery();
@@ -45,6 +42,7 @@ public class StudentManager {
                 String lName = result.getString(2);
                 String fName = result.getString(3);
                 String degree = result.getString(4);
+                result.close();
                 connection.close();
                 return new Student(idnum, lName, fName, readDegree(degree));
             } else {
@@ -64,14 +62,10 @@ public class StudentManager {
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readDegree (followed by optional numbers if multiple tests are used)
      */
     public static Degree readDegree(String id) throws NoSuchRecordException, SQLException {
-        try {
-            Connection connection;
-            String url = "jdbc:derby:memory:studentdb";
-            connection = DriverManager.getConnection(url);
+        String sql = "SELECT * FROM DEGREES WHERE id=?";
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
 
-            String sql = "SELECT * FROM DEGREES WHERE id=?";
-
-            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, id);
 
             ResultSet result = stmt.executeQuery();
@@ -79,6 +73,7 @@ public class StudentManager {
             if (result.next()) {
                 String idnum = result.getString(1);
                 String degreeName = result.getString(2);
+                result.close();
                 connection.close();
                 return new Degree(idnum, degreeName);
             } else {
@@ -98,14 +93,10 @@ public class StudentManager {
      */
     public static void delete(Student student) throws NoSuchRecordException, SQLException {
         String id = student.getId();
-        try {
-            Connection connection;
-            String url = "jdbc:derby:memory:studentdb";
-            connection = DriverManager.getConnection(url);
+        String sql = "DELETE FROM STUDENTS WHERE id=?";
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
 
-            String sql = "DELETE FROM STUDENTS WHERE id=?";
-
-            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, id);
 
             stmt.executeQuery();
@@ -128,18 +119,19 @@ public class StudentManager {
         String id = student.getId();
         String name = student.getName();
         String fName = student.getFirstName();
-        Degree degree = student.getDegree();
-        try {
-            Connection connection;
-            String url = "jdbc:derby:memory:studentdb";
-            connection = DriverManager.getConnection(url);
+        String degree = student.getDegree().getId();
 
-            String sql = "UPDATE STUDENTS SET first_name = name, NAME = name WHERE id=?";
+        String sql = "UPDATE STUDENTS SET name = ?, first_name = ?, degree = ? WHERE id=?";
 
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, id);
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
 
-            stmt.executeQuery();
+            stmt.setString(1, fName);
+            stmt.setString(2, name);
+            stmt.setString(3, degree);
+            stmt.setString(4, id);
+
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException();
         }
@@ -157,8 +149,27 @@ public class StudentManager {
      * @return a freshly created student instance
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_createStudent (followed by optional numbers if multiple tests are used)
      */
-    public static Student createStudent(String name,String firstName,Degree degree) {
-        return null;
+    public static Student createStudent(String name,String firstName,Degree degree) throws SQLException {
+        ArrayList<String> currentStudents = new ArrayList<>(getAllStudentIds());
+        String lastCurrentStudentId = currentStudents.get(currentStudents.size()-1);
+        int lastIdNumber = Integer.parseInt(lastCurrentStudentId.substring(2));
+        int newStudentIdNumber = lastIdNumber +1;
+        String newStudentId = "id" + newStudentIdNumber;
+
+        String sql = "INSERT INTO STUDENTS (id, name, first_name, degree)" + " VALUES (?,?,?,?) ";
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
+
+            stmt.setString(1, newStudentId);
+            stmt.setString(2, firstName);
+            stmt.setString(3, name);
+            stmt.setString(4, degree.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
+        return new Student(newStudentId, name, firstName, degree);
     }
 
     /**
@@ -166,8 +177,24 @@ public class StudentManager {
      * @return
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllStudentIds (followed by optional numbers if multiple tests are used)
      */
-    public static Collection<String> getAllStudentIds() {
-        return null;
+    public static Collection<String> getAllStudentIds() throws SQLException {
+        String sql = "SELECT id FROM STUDENTS";
+        Collection<String> studentIds = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
+
+            ResultSet result = stmt.executeQuery();
+
+            while(result.next()){
+                studentIds.add(result.getString(1));
+            }
+            result.close();
+            connection.close();
+            return studentIds;
+
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
     }
 
     /**
@@ -175,9 +202,23 @@ public class StudentManager {
      * @return
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllDegreeIds (followed by optional numbers if multiple tests are used)
      */
-    public static Iterable<String> getAllDegreeIds() {
-        return null;
-    }
-
-
+//    public static Iterable<String> getAllDegreeIds() {
+//        String sql = "SELECT id FROM DEGREES";
+//        Iterable<String> degreeIterator = new
+//        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+//             PreparedStatement stmt = connection.prepareStatement(sql)){
+//
+//            ResultSet result = stmt.executeQuery();
+//
+//            while(result.next()){
+//                studentIds.;
+//            }
+//            result.close();
+//            connection.close();
+//            return studentIds;
+//
+//        } catch (SQLException e) {
+//            throw new SQLException();
+//        }
+//    }
 }
