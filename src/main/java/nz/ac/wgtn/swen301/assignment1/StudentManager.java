@@ -28,7 +28,7 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readStudent (followed by optional numbers if multiple tests are used)
      */
-    public static Student readStudent(String id) throws NoSuchRecordException, SQLException {
+    public static Student readStudent(String id) throws NoSuchRecordException {
         String sql = "SELECT * FROM STUDENTS WHERE id=?";
         try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
             PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -49,8 +49,9 @@ public class StudentManager {
                 throw new NoSuchRecordException();
             }
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -61,7 +62,7 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readDegree (followed by optional numbers if multiple tests are used)
      */
-    public static Degree readDegree(String id) throws NoSuchRecordException, SQLException {
+    public static Degree readDegree(String id) throws NoSuchRecordException {
         String sql = "SELECT * FROM DEGREES WHERE id=?";
         try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
              PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -80,8 +81,9 @@ public class StudentManager {
                 throw new NoSuchRecordException();
             }
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -91,7 +93,7 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record corresponding to this student instance exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_delete
      */
-    public static void delete(Student student) throws NoSuchRecordException, SQLException {
+    public static void delete(Student student) throws NoSuchRecordException {
         String id = student.getId();
         String sql = "DELETE FROM STUDENTS WHERE id=?";
         try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
@@ -101,7 +103,7 @@ public class StudentManager {
 
             stmt.executeQuery();
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
     }
 
@@ -115,7 +117,7 @@ public class StudentManager {
      * @throws NoSuchRecordException if no record corresponding to this student instance exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_update (followed by optional numbers if multiple tests are used)
      */
-    public static void update(Student student) throws NoSuchRecordException, SQLException {
+    public static void update(Student student) throws NoSuchRecordException {
         String id = student.getId();
         String name = student.getName();
         String fName = student.getFirstName();
@@ -133,7 +135,7 @@ public class StudentManager {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
     }
 
@@ -149,7 +151,7 @@ public class StudentManager {
      * @return a freshly created student instance
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_createStudent (followed by optional numbers if multiple tests are used)
      */
-    public static Student createStudent(String name,String firstName,Degree degree) throws SQLException {
+    public static Student createStudent(String name,String firstName,Degree degree)  {
         ArrayList<String> currentStudents = new ArrayList<>(getAllStudentIds());
         String lastCurrentStudentId = currentStudents.get(currentStudents.size()-1);
         int lastIdNumber = Integer.parseInt(lastCurrentStudentId.substring(2));
@@ -169,9 +171,9 @@ public class StudentManager {
             connection.close();
             return new Student(newStudentId, name, firstName, degree);
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
-
+        return null;
     }
 
     /**
@@ -179,7 +181,7 @@ public class StudentManager {
      * @return
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllStudentIds (followed by optional numbers if multiple tests are used)
      */
-    public static Collection<String> getAllStudentIds() throws SQLException {
+    public static Collection<String> getAllStudentIds() {
         String sql = "SELECT id FROM STUDENTS";
         Collection<String> studentIds = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
@@ -195,8 +197,9 @@ public class StudentManager {
             return studentIds;
 
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -204,7 +207,7 @@ public class StudentManager {
      * @return
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllDegreeIds (followed by optional numbers if multiple tests are used)
      */
-    public static Iterable<String> getAllDegreeIds() throws SQLException {
+    public static Iterable<String> getAllDegreeIds() {
         String sql = "SELECT * FROM DEGREES";
         ArrayList<String> degreeIds = new ArrayList<>();
 
@@ -221,7 +224,8 @@ public class StudentManager {
             return degreeIds;
 
         } catch (SQLException e) {
-            throw new SQLException();
+            e.printStackTrace();
         }
+        return null;
     }
 }

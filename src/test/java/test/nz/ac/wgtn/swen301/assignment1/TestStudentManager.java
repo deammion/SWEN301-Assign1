@@ -35,7 +35,7 @@ public class TestStudentManager {
     }
 
     @Test
-    public void test_readStudent() throws NoSuchRecordException {
+    public void test_readStudent() {
         try {
             Student studentExpected = new Student("id0","James","Smith",new Degree());
 
@@ -43,13 +43,13 @@ public class TestStudentManager {
             assertNotNull(studentReceived);
             assertEquals(studentExpected, studentReceived);
 
-        } catch (NoSuchRecordException | SQLException e) {
+        } catch (NoSuchRecordException e) {
             fail("No such record exists");
         }
     }
 
     @Test
-    public void test_readDegree() throws NoSuchRecordException {
+    public void test_readDegree() {
         try {
             Degree degreeExpected = new Degree("deg0", "BSc Computer Science");
 
@@ -57,26 +57,26 @@ public class TestStudentManager {
             assertNotNull(degreeReceived);
             assertEquals(degreeExpected, degreeReceived);
 
-        } catch (NoSuchRecordException | SQLException e) {
+        } catch (NoSuchRecordException e) {
             fail("No Degree exists");
         }
     }
 
     @Test
-    public void test_delete() throws NoSuchRecordException {
+    public void test_delete() {
         try {
             Student studentToDelete = new Student("id0","James","Smith",new Degree());
 
             StudentManager.delete(studentToDelete);
             StudentManager.readStudent("id0");
 
-        } catch (NoSuchRecordException | SQLException e) {
+        } catch (NoSuchRecordException e) {
             assert(true);
         }
     }
 
     @Test
-    public void test_update() throws NoSuchRecordException {
+    public void test_update() {
         try {
             Student studentExpected = new Student("id0", "Student", "Updated", new Degree("deg0", "BSc Computer Science"));
             StudentManager.update(studentExpected);
@@ -85,7 +85,7 @@ public class TestStudentManager {
             assertNotNull(studentReceived);
             assertEquals(studentExpected, studentReceived);
 
-        } catch (NoSuchRecordException | SQLException e) {
+        } catch (NoSuchRecordException e) {
             fail("No such record exists");
         }
     }
@@ -100,37 +100,29 @@ public class TestStudentManager {
 
             assertNotNull(createdStudent);
             assertEquals(studentReceived,createdStudent);
-        } catch (SQLException | NoSuchRecordException e) {
+        } catch (NoSuchRecordException e) {
             fail("No such record exists");
         }
     }
 
     @Test
     public void test_getAllStudentIds() {
-         try {
-             Collection<String> studentIds = StudentManager.getAllStudentIds();
-             int expectedStudentIdNumber = 10000;
-             int recievedStudentIdNumber = studentIds.size();
-             assertNotNull(studentIds);
-             assertEquals(expectedStudentIdNumber, recievedStudentIdNumber);
-         } catch (SQLException e) {
-             fail("Expected value and received value differ");
-         }
+        Collection<String> studentIds = StudentManager.getAllStudentIds();
+        int expectedStudentIdNumber = 10000;
+        int recievedStudentIdNumber = studentIds.size();
+        assertNotNull(studentIds);
+        assertEquals(expectedStudentIdNumber, recievedStudentIdNumber);
     }
 
     @Test
     public void test_getAllDegreeIds() {
-         try {
-            Iterable<String> degreeIds = StudentManager.getAllDegreeIds();
-            //hard coded as all values of degree id is known, test will need to be updated if new degree is added
-            String[] expectedDegreeIds = {"deg0", "deg1", "deg2", "deg3", "deg4", "deg5", "deg6", "deg7", "deg8", "deg9"};
-            assertNotNull(degreeIds);
-            ArrayList<String> receivedDegreeIds = new ArrayList<>((Collection<? extends String>) degreeIds);
-            for(int i = 0; i < receivedDegreeIds.size(); i++) {
-                assertEquals(expectedDegreeIds[i], receivedDegreeIds.get(i));
-            }
-        } catch (SQLException e) {
-            fail("Expected value and received value differ");
+        Iterable<String> degreeIds = StudentManager.getAllDegreeIds();
+        //hard coded as all values of degree id is known, test will need to be updated if new degree is added
+        String[] expectedDegreeIds = {"deg0", "deg1", "deg2", "deg3", "deg4", "deg5", "deg6", "deg7", "deg8", "deg9"};
+        assertNotNull(degreeIds);
+        ArrayList<String> receivedDegreeIds = new ArrayList<>((Collection<? extends String>) degreeIds);
+        for(int i = 0; i < receivedDegreeIds.size(); i++) {
+            assertEquals(expectedDegreeIds[i], receivedDegreeIds.get(i));
         }
     }
 
@@ -143,7 +135,7 @@ public class TestStudentManager {
                 Student studentReceived = StudentManager.readStudent("id" + randomId);
                 assertNotNull(studentReceived);
             }
-        } catch (NoSuchRecordException | SQLException e) {
+        } catch (NoSuchRecordException e) {
             fail("No such record exists");
         }
         long endTime = System.nanoTime();

@@ -17,7 +17,39 @@
                 <target>1.8</target>
             </configuration>
         </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.7.1</version>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>3.0.0</version>
+        </plugin>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                    <configuration>
+                        <finalName>
+                            studentfinder
+                        </finalName>
+                        <includeSystemScope>true</includeSystemScope>
+                        <mainClass>
+                            nz.ac.wgtn.swen301.assignment1.cli.FindStudentDetails
+                        </mainClass>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
+
     </build>
   <dependencies>
     <dependency>
@@ -44,6 +76,14 @@
       </dependency>
 
   </dependencies>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
