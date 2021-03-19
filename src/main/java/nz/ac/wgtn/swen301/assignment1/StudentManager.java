@@ -166,10 +166,12 @@ public class StudentManager {
             stmt.setString(4, degree.getId());
 
             stmt.executeUpdate();
+            connection.close();
+            return new Student(newStudentId, name, firstName, degree);
         } catch (SQLException e) {
             throw new SQLException();
         }
-        return new Student(newStudentId, name, firstName, degree);
+
     }
 
     /**
@@ -202,23 +204,24 @@ public class StudentManager {
      * @return
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllDegreeIds (followed by optional numbers if multiple tests are used)
      */
-//    public static Iterable<String> getAllDegreeIds() {
-//        String sql = "SELECT id FROM DEGREES";
-//        Iterable<String> degreeIterator = new
-//        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
-//             PreparedStatement stmt = connection.prepareStatement(sql)){
-//
-//            ResultSet result = stmt.executeQuery();
-//
-//            while(result.next()){
-//                studentIds.;
-//            }
-//            result.close();
-//            connection.close();
-//            return studentIds;
-//
-//        } catch (SQLException e) {
-//            throw new SQLException();
-//        }
-//    }
+    public static Iterable<String> getAllDegreeIds() throws SQLException {
+        String sql = "SELECT * FROM DEGREES";
+        ArrayList<String> degreeIds = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection("jdbc:derby:memory:studentdb");
+             PreparedStatement stmt = connection.prepareStatement(sql)){
+
+            ResultSet result = stmt.executeQuery();
+
+            while(result.next()){
+                degreeIds.add(result.getString(1));
+            }
+            result.close();
+            connection.close();
+            return degreeIds;
+
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
+    }
 }

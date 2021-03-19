@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
@@ -26,12 +27,12 @@ public class TestStudentManager {
     }
     // DO NOT REMOVE BLOCK ENDS HERE
 
-//    @Test
-//    public void dummyTest() throws Exception {
-//        Student student = new StudentManager().readStudent("id42");
-//        // THIS WILL INITIALLY FAIL !!
-//        assertNotNull(student);
-//    }
+    @Test
+    public void dummyTest() throws Exception {
+        Student student = new StudentManager().readStudent("id42");
+        // THIS WILL INITIALLY FAIL !!
+        assertNotNull(student);
+    }
 
     @Test
     public void test_readStudent() throws NoSuchRecordException {
@@ -117,29 +118,35 @@ public class TestStudentManager {
          }
     }
 
-//    @Test
-//    public void test_getAllDegreeIds() {
-//         try {
-//            Iterable<String> degreeIds = StudentManager.getAllDegreeIds();
-//            int expectedDegreeIdNumber = 10;
-//            int recievedDegreeIdNumber;
-//            assertNotNull(degreeIds);
-//            assertEquals(expectedDegreeIdNumber, recievedDegreeIdNumber);
-//        } catch (SQLException e) {
-//            fail("Expected value and received value differ");
-//        }
-//    }
+    @Test
+    public void test_getAllDegreeIds() {
+         try {
+            Iterable<String> degreeIds = StudentManager.getAllDegreeIds();
+            //hard coded as all values of degree id is known, test will need to be updated if new degree is added
+            String[] expectedDegreeIds = {"deg0", "deg1", "deg2", "deg3", "deg4", "deg5", "deg6", "deg7", "deg8", "deg9"};
+            assertNotNull(degreeIds);
+            ArrayList<String> receivedDegreeIds = new ArrayList<>((Collection<? extends String>) degreeIds);
+            for(int i = 0; i < receivedDegreeIds.size(); i++) {
+                assertEquals(expectedDegreeIds[i], receivedDegreeIds.get(i));
+            }
+        } catch (SQLException e) {
+            fail("Expected value and received value differ");
+        }
+    }
 
     @Test
     public void test_performance() {
+        long startTime = System.nanoTime();
         try {
             for(int i = 0; i <= 1000; i++){
-                int randomId = new Random().nextInt(1000);
+                int randomId = new Random().nextInt(10000);
                 Student studentReceived = StudentManager.readStudent("id" + randomId);
                 assertNotNull(studentReceived);
             }
         } catch (NoSuchRecordException | SQLException e) {
             fail("No such record exists");
         }
+        long endTime = System.nanoTime();
+        System.out.println((endTime - startTime)/1000000 + "ms");
     }
 }
