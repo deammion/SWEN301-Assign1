@@ -24,7 +24,7 @@ public class StudentManager {
      * Return a student instance with values from the row with the respective id in the database.
      * If an instance with this id already exists, return the existing instance and do not create a second one.
      * @param id
-     * @return
+     * @return Student - create new student object, with details of matching student from database
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readStudent (followed by optional numbers if multiple tests are used)
      */
@@ -58,7 +58,7 @@ public class StudentManager {
      * Return a degree instance with values from the row with the respective id in the database.
      * If an instance with this id already exists, return the existing instance and do not create a second one.
      * @param id
-     * @return
+     * @return Degree - new degree object, with details of matching degree from database
      * @throws NoSuchRecordException if no record with such an id exists in the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_readDegree (followed by optional numbers if multiple tests are used)
      */
@@ -178,7 +178,7 @@ public class StudentManager {
 
     /**
      * Get all student ids currently being used in the database.
-     * @return
+     * @return studentIds - a collections of all the student ids, from the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllStudentIds (followed by optional numbers if multiple tests are used)
      */
     public static Collection<String> getAllStudentIds() {
@@ -204,7 +204,7 @@ public class StudentManager {
 
     /**
      * Get all degree ids currently being used in the database.
-     * @return
+     * @return degreeIds - an iterable of all the degree ids from the database
      * This functionality is to be tested in test.nz.ac.wgtn.swen301.assignment1.TestStudentManager::test_getAllDegreeIds (followed by optional numbers if multiple tests are used)
      */
     public static Iterable<String> getAllDegreeIds() {
